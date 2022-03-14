@@ -1,8 +1,10 @@
+/* ------------------------------- DEPARTMENT ------------------------------- */
 CREATE TABLE department (
  id INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
  name VARCHAR(30)
 )
 
+/* ---------------------------------- ROLE ---------------------------------- */
 CREATE TABLE role (
  id INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
  title VARCHAR(30), 
@@ -10,6 +12,7 @@ CREATE TABLE role (
  department_id INT
 )
 
+/* -------------------------------- EMPLOYEE -------------------------------- */
 CREATE TABLE employee (
  id INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
  first_name VARCHAR(30),
