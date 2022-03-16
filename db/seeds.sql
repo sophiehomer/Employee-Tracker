@@ -1,24 +1,27 @@
 /* ------------------------------- DEPARTMENT ------------------------------- */
-INSERT INTO department (id, name)
+INSERT INTO department (name)
 VALUES 
-(1, "management"),
-(2, "service"),
-(3, "sales")
+("management"),
+("service"),
+("sales");
 
 /* ---------------------------------- ROLE ---------------------------------- */
-INSERT INTO role (id, title, salary, department_id)
-(1, "manager", 62960, 5),
-(2, "customer_service_associate", 48840, 6), 
-(3, "sales_associate", 39963, 7)
+INSERT INTO role (title, salary, department_id)
+VALUES
+("manager", 62960, 1),
+("customer_service_associate", 48840, 2), 
+("sales_associate", 39963, 3);
 
 /* --------------------------------- MANAGER -------------------------------- */
 INSERT INTO employee (first_name, last_name, role_id)
-("Celine", "Homer", 5),
-("Josh", "Birch", 5)
+VALUES
+("Celine", "Homer", 1),
+("Josh", "Birch", 1);
 
 /* -------------------------------- EMPLOYEE -------------------------------- */
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-("Stacy", "Chavez", 4, 1) 
-("Isabella", "Guetta", 5, 2) 
-("Leslie", "Dwight", 1, 2) 
-("Will", "Mcniery", 2, 1) 
+VALUES
+("Stacy", "Chavez", 3, 1) ,
+("Isabella", "Guetta", 2, 2) ,
+("Leslie", "Dwight", 3, 2), 
+("Will", "Mcniery", 3, 1); 
