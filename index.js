@@ -1,13 +1,12 @@
 inquirer = require("inquirer");
 
 
-// Create a series of prompts inside of inquirer 
-
+/* --------------------------------- PROMPTS -------------------------------- */
 const prompts = () => {
     return inquirer.prompt([
     {
         type: "list",
-        name: "",
+        name: "navigation",
         message: "Which of the following would you like to do?",
         choices:
         [
@@ -22,63 +21,72 @@ const prompts = () => {
     }
     ])
 }
-
+/* ----------------------------- ADD DEPARTMENT ----------------------------- */
 const addDepartment = () => {
     return inquirer.prompt([
         {
             type: "input",
-            name: "type",
+            name: "new department",
             message: "What is the name of the department you'd like to add?",
 
         }
     ])
 }
-
+/* -------------------------------- ADD ROLE -------------------------------- */
 const addRole = () => {
     return inquirer.prompt([
         {
             type: "input",
-            name: "type",
+            name: "new role",
             message: "What is the role you'd like to add?"
         },
         {
             type:"input",
-            name:"type", 
+            name:"new role salary", 
             message: "What is the salary for this role?"
         },
         {
             type:"input",
-            name:"type", 
+            name:"new role department", 
             message: "Which department does this role belong in?"
         }
     ])
 }
-
+/* ------------------------------ ADD EMPLOYEE ------------------------------ */
 const addEmployee = () => {
     return inquirer.prompt([
         {
             type:"input",
-            name:"type", 
+            name:"employee's first name", 
             message: "What is the first name of the employee?"
         },
         {
             type:"input",
-            name:"type", 
+            name:"employee's last name", 
             message: "What is the last name of the employee?"
         },
         {
             type:"input",
-            name:"type", 
+            name:"employee's role", 
             message: "What is the role of this employee?"
         },
         {
             type:"input",
-            name:"type", 
+            name:"employee's manager", 
             message: "Who is this employee's manager? If this employee doesn't have a manager, leave this blank." 
         }
     ])
 }
-  
+/* ----------------------------- UPDATE EMPLOYEE ---------------------------- */
+// const updateEmployee = () => {
+//     return inquirer.prompt([
+//         {
+            
+//         }
+//     ])
+// }
+
+
 
 
 //view all employees
