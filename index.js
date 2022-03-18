@@ -1,6 +1,5 @@
 inquirer = require("inquirer");
-const db = require("./db/connection")
-
+const db = require("./db/connection");
 
 /* --------------------------------- PROMPTS -------------------------------- */
 const prompt = () => {
@@ -30,7 +29,7 @@ function addDepartment() {
       message: "What is the name of the department you'd like to add?",
     },
   ]);
-};
+}
 /* -------------------------------- ADD ROLE -------------------------------- */
 const addRole = () => {
   return inquirer.prompt([
@@ -82,33 +81,51 @@ const addEmployee = () => {
 // const updateEmployee = () => {
 //     return inquirer.prompt([
 //         {
-//             
+//
 //         }
 //     ])
 // }
 
-
-
 prompt().then((answers) => {
   if (answers.navigation === "View all departments") {
     function viewAllDepartments() {
-      let sql = "SELECT * FROM departments";
+      let sql = "SELECT * FROM department";
       db.query(sql, (err, row) => {
         if (err) {
-          console.log(error);
+          console.log(err);
           return;
         }
-        console.log(row);
+        console.table(row);
       });
     }
-    viewAllDepartments()
+    viewAllDepartments();
   }
 
   if (answers.navigation === "View all roles") {
+    function viewAllRoles() {
+      let sql = "SELECT * FROM role";
+      db.query(sql, (err, row) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        console.table(row);
+      });
+    }
     viewAllRoles();
   }
 
   if (answers.navigation === "View all employees") {
+    function viewAllEmployees() {
+      let sql = "SELECT * FROM employee";
+      db.query(sql, (err, row) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        console.table(row);
+      });
+    }
     viewAllEmployees();
   }
 
@@ -124,8 +141,7 @@ prompt().then((answers) => {
     addEmployee();
   }
 
-//   else {
-//       updateEmployee()
- // }
+  //   else {
+  //       updateEmployee()
+  // }
 });
-
