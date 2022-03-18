@@ -2,7 +2,7 @@ inquirer = require("inquirer");
 
 
 /* --------------------------------- PROMPTS -------------------------------- */
-const prompts = () => {
+const prompt = () => {
     return inquirer.prompt([
     {
         type: "list",
@@ -77,6 +77,55 @@ const addEmployee = () => {
         }
     ])
 }
+
+/* ----------------------------- UPDATE EMPLOYEE ---------------------------- */
+// const updateEmployee = () => {
+//     return inquirer.prompt([
+//         {
+//             type:"input"
+//         }
+//     ])
+// }
+
+
+prompt().then( (answers) => {
+//console.log(answers.navigation, "line 83")
+
+if (answers.navigation === "View all departments" ) {
+    function viewAllDepartments() {
+        let sql = "SELECT * FROM departments"
+    };
+    viewAllDepartments()
+
+}
+
+if (answers.navigation === "View all roles") {
+    viewAllRoles()
+}
+
+if (answers.navigation === "View all employees") {
+    viewAllEmployees()
+}
+
+if (answers.navigation === "Add a department") {
+    addDepartment()
+}
+
+if (answers.navigation === "Add a role") {
+    addRole()
+}
+
+if (answers.navigation === "Add an employee") {
+    addEmployee()
+}
+
+// else {
+//     updateEmployee()
+// }
+
+})
+
+
 /* ----------------------------- UPDATE EMPLOYEE ---------------------------- */
 // const updateEmployee = () => {
 //     return inquirer.prompt([
