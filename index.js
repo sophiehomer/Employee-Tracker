@@ -21,56 +21,56 @@ const prompt = () => {
   ]);
 };
 /* ----------------------------- ADD DEPARTMENT ----------------------------- */
-const addDepartment = () => {
+const promptDepartment = () => {
   return inquirer.prompt([
     {
       type: "input",
-      name: "new department",
+      name: "new_department",
       message: "What is the name of the department you'd like to add?",
     },
   ]);
 }
 /* -------------------------------- ADD ROLE -------------------------------- */
-const addRole = () => {
+const promptRole = () => {
   return inquirer.prompt([
     {
       type: "input",
-      name: "new role",
+      name: "new_role",
       message: "What is the role you'd like to add?",
     },
     {
       type: "input",
-      name: "new role salary",
+      name: "role_salary",
       message: "What is the salary for this role?",
     },
     {
       type: "input",
-      name: "new role department",
+      name: "role_department",
       message: "Which department does this role belong in?",
     },
   ]);
 };
 /* ------------------------------ ADD EMPLOYEE ------------------------------ */
-const addEmployee = () => {
+const promptEmployee = () => {
   return inquirer.prompt([
     {
       type: "input",
-      name: "employee's first name",
+      name: "employee_first",
       message: "What is the first name of the employee?",
     },
     {
       type: "input",
-      name: "employee's last name",
+      name: "employee_last",
       message: "What is the last name of the employee?",
     },
     {
       type: "input",
-      name: "employee's role",
+      name: "employee_role",
       message: "What is the role of this employee?",
     },
     {
       type: "input",
-      name: "employee's manager",
+      name: "employee_manager",
       message:
         "Who is this employee's manager? If this employee doesn't have a manager, leave this blank.",
     },
@@ -130,10 +130,11 @@ prompt().then((answers) => {
   }
 
   if (answers.navigation === "Add a department") {
-    function addDepartment(name) {
-      const sql = `INSERT INTO department(name)
-                  VALUES(?)`;
-      db.query(sql, [name], (err, results) => {
+    function addDepartment(deptname) {
+      console.log(deptname);
+      const sql = `INSERT INTO department (name)
+                  VALUES (?)`;
+      db.query(sql, deptname, (err, results) => {
           if(err) {
               console.log(err);
               return;
@@ -141,11 +142,13 @@ prompt().then((answers) => {
           console.log("Department added");
       });
   }
-  addDepartment();
+  promptDepartment().then(answer => {
+    addDepartment(answer.new_department)
+  }) 
   }
 
   if (answers.navigation === "Add a role") {
-    addRole();
+    addRole()
   }
 
   if (answers.navigation === "Add an employee") {
