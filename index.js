@@ -21,7 +21,7 @@ const prompt = () => {
   ]);
 };
 /* ----------------------------- ADD DEPARTMENT ----------------------------- */
-function addDepartment() {
+const addDepartment = () => {
   return inquirer.prompt([
     {
       type: "input",
@@ -130,7 +130,18 @@ prompt().then((answers) => {
   }
 
   if (answers.navigation === "Add a department") {
-    addDepartment();
+    function addDepartment(name) {
+      const sql = `INSERT INTO department(name)
+                  VALUES(?)`;
+      db.query(sql, [name], (err, results) => {
+          if(err) {
+              console.log(err);
+              return;
+          }
+          console.log("Department added");
+      });
+  }
+  addDepartment();
   }
 
   if (answers.navigation === "Add a role") {
