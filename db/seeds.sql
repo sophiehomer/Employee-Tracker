@@ -1,9 +1,9 @@
 /* ------------------------------- DEPARTMENT ------------------------------- */
-INSERT INTO department (name)
+INSERT INTO department (id, name)
 VALUES 
-("management"),
-("service"),
-("sales");
+(1, "management"),
+(2, "service"),
+(3, "sales");
 
 /* ---------------------------------- ROLE ---------------------------------- */
 INSERT INTO role (title, salary, department_id)
@@ -16,7 +16,7 @@ VALUES
 INSERT INTO employee (first_name, last_name, role_id)
 VALUES
 ("Celine", "Homer", 1),
-("Josh", "Birch", 1);
+("Josh", "Birch", 2);
 
 /* -------------------------------- EMPLOYEE -------------------------------- */
 INSERT INTO employee (first_name, last_name, role_id, manager_id)

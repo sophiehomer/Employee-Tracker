@@ -29,7 +29,7 @@ const promptDepartment = () => {
       message: "What is the name of the department you'd like to add?",
     },
   ]);
-}
+};
 /* -------------------------------- ADD ROLE -------------------------------- */
 const promptRole = () => {
   return inquirer.prompt([
@@ -81,7 +81,7 @@ const promptEmployee = () => {
 // const updateEmployee = () => {
 //     return inquirer.prompt([
 //         {
-//
+//          ask name & change role
 //         }
 //     ])
 // }
@@ -130,30 +130,43 @@ prompt().then((answers) => {
   }
 
   if (answers.navigation === "Add a department") {
-    function addDepartment(deptname) {
-      console.log(deptname);
+    function addDepartment(deptName) {
+      console.log(deptName);
       const sql = `INSERT INTO department (name)
                   VALUES (?)`;
-      db.query(sql, deptname, (err, results) => {
-          if(err) {
-              console.log(err);
-              return;
-          }
-          console.log("Department added");
+      db.query(sql, deptName, (err) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        console.log("Department added");
       });
-  }
-  promptDepartment().then(answer => {
-    addDepartment(answer.new_department)
-  }) 
-  }
+    }
+    promptDepartment().then(answer => {
+      addDepartment(answer.new_department)
+    }); 
+  };
 
   if (answers.navigation === "Add a role") {
-    addRole()
+    function addRole(role, salary, department) {
+      const sql = `INSERT INTO role (title, salary, department_id) SELECT ?,?, department.id FROM department WHERE department.name = ?`;
+        db.query(sql, [role, salary, department], (err) => {
+          if (err) {
+            console.log(err);
+            return;
+          }
+          console.log("Role added");
+        });
+    }
+    promptRole().then((answer) => {
+      addRole(answer.new_role, answer.role_salary, answer.role_department);
+    })
   }
 
   if (answers.navigation === "Add an employee") {
-    addEmployee();
-  }
+ addEmployee()
+}
+
 
   //   else {
   //       updateEmployee()
