@@ -142,31 +142,53 @@ prompt().then((answers) => {
         console.log("Department added");
       });
     }
-    promptDepartment().then(answer => {
-      addDepartment(answer.new_department)
-    }); 
-  };
+    promptDepartment().then((answer) => {
+      addDepartment(answer.new_department);
+    });
+  }
 
   if (answers.navigation === "Add a role") {
     function addRole(role, salary, department) {
       const sql = `INSERT INTO role (title, salary, department_id) SELECT ?,?, department.id FROM department WHERE department.name = ?`;
-        db.query(sql, [role, salary, department], (err) => {
+      db.query(sql, [role, salary, department], (err) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        console.log("Role added");
+      });
+    }
+    promptRole().then((answer) => {
+      addRole(answer.new_role, answer.role_salary, answer.role_department);
+    });
+  }
+
+  if (answers.navigation === "Add an employee") {
+    function addEmployee(first_name, last_name, role, manager) {
+      if (!answers.employee_manager || answers.employee_manager === "") {
+        const sql = `INSERT INTO employee (first_name, last_name, role_id) SELECT ?,?, role.id FROM role WHERE role.title = ?`;
+        db.query(sql, [first_name, last_name, role, manager], (err) => {
           if (err) {
             console.log(err);
             return;
           }
-          console.log("Role added");
+          console.log("Employee added");
         });
+      }
     }
-    promptRole().then((answer) => {
-      addRole(answer.new_role, answer.role_salary, answer.role_department);
-    })
+    promptEmployee().then((answer) => {
+      addEmployee(
+       answer.employee_first,
+       answer.employee_last,
+       answer.employee_role,
+       answer.employee_manager
+      );
+    });
+
+    
+
+
   }
-
-  if (answers.navigation === "Add an employee") {
- addEmployee()
-}
-
 
   //   else {
   //       updateEmployee()

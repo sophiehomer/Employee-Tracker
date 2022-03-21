@@ -16,7 +16,7 @@ VALUES
 INSERT INTO employee (first_name, last_name, role_id)
 VALUES
 ("Celine", "Homer", 1),
-("Josh", "Birch", 2);
+("Josh", "Birch", 1);
 
 /* -------------------------------- EMPLOYEE -------------------------------- */
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
