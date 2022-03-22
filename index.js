@@ -71,20 +71,30 @@ const promptEmployee = () => {
     {
       type: "input",
       name: "employee_manager",
-      message:
-        "Who is this employee's manager? If this employee doesn't have a manager, leave this blank.",
+      message: "Enter the name of the employee's manager. If this employee doesn't have a manager, leave it blank and press enter.",
     },
   ]);
 };
 
 /* ----------------------------- UPDATE EMPLOYEE ---------------------------- */
-// const updateEmployee = () => {
-//     return inquirer.prompt([
-//         {
-//          ask name & change role
-//         }
-//     ])
-// }
+ const PromptUpdateEmployee = () => {
+     return inquirer.prompt([
+         {
+          type: "list",
+          name: "employees",
+          message: "Choose the employee you'd like to update",
+          //choices: 
+         },
+         {
+           type: "list",
+           name: "roles",
+           message: "Which role would you like to assign this employee to?",
+           //choices: 
+         }
+     ]);
+  };
+
+
 
 prompt().then((answers) => {
   if (answers.navigation === "View all departments") {
@@ -164,33 +174,49 @@ prompt().then((answers) => {
   }
 
   if (answers.navigation === "Add an employee") {
-    function addEmployee(first_name, last_name, role, manager) {
-      if (!answers.employee_manager || answers.employee_manager === "") {
-        const sql = `INSERT INTO employee (first_name, last_name, role_id) SELECT ?,?, role.id FROM role WHERE role.title = ?`;
-        db.query(sql, [first_name, last_name, role, manager], (err) => {
+    function addEmployee(first_name, last_name, role, managerFirstName, managerLastName) {
+      if (!managerFirstName || managerFirstName === "") {
+        const sql = `INSERT INTO employee (first_name, last_name, role_id) 
+                    SELECT ?,?, role.id FROM role 
+                    WHERE role.title = ?`;
+        db.query(sql, [first_name, last_name, role], (err) => {
           if (err) {
             console.log(err);
             return;
           }
           console.log("Employee added");
         });
+      } else {
+        const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+                    SELECT ?,?, role.id, manager.id FROM role, employee manager 
+                    WHERE role.title = ? AND manager.first_name = ? AND manager.last_name = ?`;
+        db.query(sql, [first_name, last_name, role, managerFirstName, managerLastName], (err) => {
+          if (err) {
+            console.error(err);
+            return;
+          }
+          console.log("Employee added")
+        })
       }
     }
     promptEmployee().then((answer) => {
+     const managerName = answer.employee_manager.split(" ");
+     const managerFirstName = managerName[0];
+     const managerLastName = managerName[1];
+
+
       addEmployee(
-       answer.employee_first,
-       answer.employee_last,
-       answer.employee_role,
-       answer.employee_manager
+        answer.employee_first,
+        answer.employee_last,
+        answer.employee_role,
+        managerFirstName,
+        managerLastName
       );
     });
-
-    
-
-
   }
 
-  //   else {
-  //       updateEmployee()
-  // }
+  if (answers.navigation === "Update employee role") {
+   
+  };
+
 });
