@@ -1,7 +1,7 @@
 inquirer = require("inquirer");
 const db = require("./db/connection");
 
-/* --------------------------------- PROMPTS -------------------------------- */
+/* --------------------------------- NAVIGATION PROMPT -------------------------------- */
 const prompt = () => {
   return inquirer.prompt([
     {
@@ -20,7 +20,7 @@ const prompt = () => {
     },
   ]);
 };
-/* ----------------------------- ADD DEPARTMENT ----------------------------- */
+/* ----------------------------- ADD DEPARTMENT PROMPT ----------------------------- */
 const promptDepartment = () => {
   return inquirer.prompt([
     {
@@ -30,7 +30,7 @@ const promptDepartment = () => {
     },
   ]);
 };
-/* -------------------------------- ADD ROLE -------------------------------- */
+/* -------------------------------- ADD ROLE PROMPT -------------------------------- */
 const promptRole = () => {
   return inquirer.prompt([
     {
@@ -50,7 +50,7 @@ const promptRole = () => {
     },
   ]);
 };
-/* ------------------------------ ADD EMPLOYEE ------------------------------ */
+/* ------------------------------ ADD EMPLOYEE PROMPT ------------------------------ */
 const promptEmployee = () => {
   return inquirer.prompt([
     {
@@ -71,31 +71,34 @@ const promptEmployee = () => {
     {
       type: "input",
       name: "employee_manager",
-      message: "Enter the name of the employee's manager. If this employee doesn't have a manager, leave it blank and press enter.",
+      message:
+        "Enter the name of the employee's manager. If this employee doesn't have a manager, leave it blank and press enter.",
     },
   ]);
 };
 
-/* ----------------------------- UPDATE EMPLOYEE ---------------------------- */
- const PromptUpdateEmployee = () => {
-     return inquirer.prompt([
-         {
-          type: "list",
-          name: "employees",
-          message: "Choose the employee you'd like to update",
-          //choices: 
-         },
-         {
-           type: "list",
-           name: "roles",
-           message: "Which role would you like to assign this employee to?",
-           //choices: 
-         }
-     ]);
-  };
+/* ----------------------------- UPDATE EMPLOYEE PROMPT ---------------------------- */
+const PromptUpdateEmployee = async () => {
+  const employees = await allEmployees().then(row => formatEmployees(row));
+  const roles = await allRoles().then(row => formatRoles(row));
+  return await inquirer.prompt([
+    {
+      type: "list",
+      name: "employees",
+      message: "Choose the employee you'd like to update",
+      choices: employees,
+    },
+    {
+      type: "list",
+      name: "roles",
+      message: "Which role would you like to assign this employee to?",
+      choices: roles,
+    },
+  ]);
+};
 
 
-
+/* ------------------- VIEW ALL DEPARTMENTS -------------------- */
 prompt().then((answers) => {
   if (answers.navigation === "View all departments") {
     function viewAllDepartments() {
@@ -111,6 +114,7 @@ prompt().then((answers) => {
     viewAllDepartments();
   }
 
+  /* ------------------- VIEW ALL ROLES -------------------- */
   if (answers.navigation === "View all roles") {
     function viewAllRoles() {
       let sql = "SELECT * FROM role";
@@ -125,6 +129,7 @@ prompt().then((answers) => {
     viewAllRoles();
   }
 
+  /* ------------------- VIEW ALL EMPLOYEES -------------------- */
   if (answers.navigation === "View all employees") {
     function viewAllEmployees() {
       let sql = "SELECT * FROM employee";
@@ -138,7 +143,8 @@ prompt().then((answers) => {
     }
     viewAllEmployees();
   }
-
+  
+  /* ------------------- ADD A DEPARTMENT -------------------- */
   if (answers.navigation === "Add a department") {
     function addDepartment(deptName) {
       console.log(deptName);
@@ -157,6 +163,7 @@ prompt().then((answers) => {
     });
   }
 
+  /* ------------------- ADD A ROLE -------------------- */
   if (answers.navigation === "Add a role") {
     function addRole(role, salary, department) {
       const sql = `INSERT INTO role (title, salary, department_id) SELECT ?,?, department.id FROM department WHERE department.name = ?`;
@@ -173,8 +180,15 @@ prompt().then((answers) => {
     });
   }
 
+  /* ------------------- ADD AN EMPLOYEE -------------------- */
   if (answers.navigation === "Add an employee") {
-    function addEmployee(first_name, last_name, role, managerFirstName, managerLastName) {
+    function addEmployee(
+      first_name,
+      last_name,
+      role,
+      managerFirstName,
+      managerLastName
+    ) {
       if (!managerFirstName || managerFirstName === "") {
         const sql = `INSERT INTO employee (first_name, last_name, role_id) 
                     SELECT ?,?, role.id FROM role 
@@ -190,20 +204,23 @@ prompt().then((answers) => {
         const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
                     SELECT ?,?, role.id, manager.id FROM role, employee manager 
                     WHERE role.title = ? AND manager.first_name = ? AND manager.last_name = ?`;
-        db.query(sql, [first_name, last_name, role, managerFirstName, managerLastName], (err) => {
-          if (err) {
-            console.error(err);
-            return;
+        db.query(
+          sql,
+          [first_name, last_name, role, managerFirstName, managerLastName],
+          (err) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
+            console.log("Employee added");
           }
-          console.log("Employee added")
-        })
+        );
       }
     }
     promptEmployee().then((answer) => {
-     const managerName = answer.employee_manager.split(" ");
-     const managerFirstName = managerName[0];
-     const managerLastName = managerName[1];
-
+      const managerName = answer.employee_manager.split(" ");
+      const managerFirstName = managerName[0];
+      const managerLastName = managerName[1];
 
       addEmployee(
         answer.employee_first,
@@ -214,9 +231,77 @@ prompt().then((answers) => {
       );
     });
   }
-
+  /* ----------------------------- UPDATE EMPLOYEE ---------------------------- */
   if (answers.navigation === "Update employee role") {
-   
-  };
-
+    PromptUpdateEmployee().then((answer) => {
+      const employee = answer.employees;
+      const role = answer.roles;
+      updateEmployee(employee, role);
+    });
+  }
 });
+
+function allEmployees() {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT first_name, last_name FROM employee`;
+    db.query(sql, (err, row) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(row);
+    });
+  });
+}
+
+const formatEmployees = (row) => {
+  const employees = [];
+  row.forEach((data) => {
+    employees.push(data.first_name + " " + data.last_name);
+  });
+  return employees;
+};
+
+function updateEmployee(name, role) {
+  console.log(name)
+  const names = name.split(" ");
+  const first = names[0];
+  const last = names[1];
+  const sql = `UPDATE employee SET employee.role_id = ? WHERE employee.first_name = ? AND employee.last_name = ?`;
+  db.query(sql, [
+    role,
+    first,
+    last,
+  ],
+    (err) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log("Employee updated");
+    },
+  );
+}
+
+function allRoles() {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT * FROM role`;
+    db.query(sql, (err, row) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(row);
+    });
+  });
+}
+
+const formatRoles = (row) => {
+  const employees = [];
+  row.forEach((data) => {
+    const roles = {
+      name: data.title,
+      value: data.id,
+    };
+    employees.push(roles);
+  });
+  return employees;
+};
